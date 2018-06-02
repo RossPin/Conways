@@ -4,13 +4,40 @@
   <title>Conways</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta charset="UTF-8">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="conways.js"></script>
   <link rel="stylesheet" type="text/css" href="main.css">
-  <script src="index.js"></script>
+  <script src="index.js"></script>  
 </head>
 <body>
-    <div class="container">
+    <div class="container">      
+      <form class="options">
+        <label for="boardSize">Board Size</label>
+        <select id="boardSize" onchange="changeBoardSize()">
+          <option value="600">600px</option>
+          <option value="800" selected="selected">800px</option>
+          <option value="1000">1000px</option>
+          <option value="1200">1200px</option>           
+        </select>
+        <label for="refresh">Lifecycle Rate</label>
+        <select id="refresh" onchange="changeRefresh()">
+          <option value="50">50ms</option>
+          <option value="100" selected="selected">100ms</option>
+          <option value="200">200ms</option>
+          <option value="500">500ms</option>           
+        </select>
+        <label for="gridSize">Cell Density</label>
+        <select id="gridSize" onchange="changeGridSize()">
+          <option value="25">25x25</option>
+          <option value="50">50x50</option>
+          <option value="100" selected="selected">100x100</option>
+          <option value="150">150x150</option> 
+          <option value="200">200x200</option>          
+        </select>
+        <div class="btn" id="startButton">Start</div>
+      </form>
       <div class="board" id="board">
       </div>      
-    </div>
+    </div>    
 </body>
 </html>

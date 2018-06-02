@@ -1,126 +1,99 @@
-document.addEventListener('DOMContentLoaded', start)
+$('document').ready(init)
 
-const size = 200
-const refreshInterval = 100
+let size = 100
+let refreshInterval = 100
+let boardSize = 800
+let running = false
 
-let board = createBoard(size)
-for (let i=0; i<size; i++){
-  for (let j=0; j<size; j++){
-    board[i][j] = Math.round(Math.random())
-  }
+let board = [] 
+
+function init() {
+  board = conways.createBoard(size)
+  populateBoard()
+  buildBoardHTML() 
+  $('#startButton').off()
+  $('#startButton').on('click', start) 
+  $('#startButton').text('Start')
 }
 
-function start() {
-  let boardHTML = document.getElementById('board')
-  let boardSize = boardHTML.offsetWidth
-  let cellsize = Number(boardSize)/size+'px'
-  // for (let i=0; i < size; i++){
-  //   boardHTML.innerHTML += '<div id="row'+i+'" style="height: '+cellsize+';"></div>'
-  //   let rowHTML = document.getElementById('row'+i)
-  //   //rowHTML.style.height = cellsize
-  //   for (let j=0; j < size; j++){
-  //     rowHTML.innerHTML += '<span id="row'+i+'col'+j+'" class="cell" style="height: '+cellsize+'; width: '+cellsize+'"></span>'
-  //     // let cell = document.getElementById('row'+i+'col'+j)
-  //     // cell.style.height = cellsize
-  //     // cell.style.width = cellsize
-  //   }
-  // }
-  for (let i=0; i < size; i++){    
-    let row = '<div id="row'+i+'" style="height: '+cellsize+';">'   
-    for (let j=0; j < size; j++){
-      row += '<span id="row'+i+'col'+j+'" class="cell" style="height: '+cellsize+'; width: '+cellsize+'"></span>'      
-    }
-    boardHTML.innerHTML += row+'</div>'
-  }
-
-  setInterval(() => {
+function start(){
+  $('#startButton').text('Clear')
+  $('#startButton').off()
+  $('#startButton').on('click', clearBoard) 
+  running = true;
+  sequence = setInterval(() => {
     displayBoard(board)
-    board = nextBoard(board)
+    board = conways.nextBoard(board)
   }, refreshInterval)
 }
 
 function displayBoard () {
   for (let i=0; i<size; i++){
       for (let j=0; j<size; j++){
-        let cell = document.getElementById('row'+i+'col'+j)
+        let cell = $('#row'+i+'col'+j)
         if (board[i][j] == 1) {
-          cell.classList.add('alive')
+          cell.addClass('alive')
         }
         else {
-          cell.classList.remove('alive')
+          cell.removeClass('alive')
         }
       }
     }
 }
 
-function createBoard (size) {
-    let board = []
-    for (let i=0; i < size; i++){
-        let row = []
-        for (let j=0; j < size; j++) {
-            row.push(0)
-        }
-        board.push(row)
+function buildBoardHTML() {
+  let boardHTML = $('#board')
+  boardHTML.html('')
+  boardHTML.css('width',boardSize+'px')  
+  let cellsize = boardSize/size+'px'
+  for (let i=0; i < size; i++){        
+    let row = '<div id="row'+i+'" class="row">'  
+    for (let j=0; j < size; j++){      
+      row += '<span id="row'+i+'col'+j+'" class="cell""></span>'      
     }
-    return board
+    boardHTML.append(row+'</div>')
+  }
+  $('.row').css('height', cellsize)
+  $('.cell').css('height', cellsize)
+  $('.cell').css('width', cellsize)
 }
 
-function nextBoard (currentBoard) {
-    let newBoard = createBoard(currentBoard.length)
-    for (let i = 0; i < newBoard.length; i++) {
-        for (let j = 0; j < newBoard.length; j++) {
-            let row = i
-            let column = j
-            let aliveNeighbors = countAliveNeighbours(row, column, currentBoard)
-            newBoard[row][column] = nextCellState(currentBoard[row][column], aliveNeighbors)
-        }
+function populateBoard() {
+  for (let i=0; i<size; i++){
+    for (let j=0; j<size; j++){
+      board[i][j] = Math.round(Math.random())
     }
-    return newBoard
+  }
 }
 
-function nextCellState (cellState, neighbourCount) {
-    if (cellState) {
-        return !isOverPopulated(neighbourCount) && !isUnderPopulated(neighbourCount)
-    }return isRessurectable(neighbourCount)
+function changeGridSize() {
+  size = $('#gridSize').val()
+  if (running) clearInterval(sequence)
+  running = false;
+  init()
+  }
+
+function changeBoardSize() {
+  boardSize = $('#boardSize').val()
+  if (running) clearInterval(sequence)
+  running = false;
+  init()  
 }
 
-function countAliveNeighbours (cellRow, cellColumn, board) {
-    let neighbours = getNeighbours(cellRow, cellColumn, board)
-    return neighbours.reduce((count, val) => count + val, 0)
+function changeRefresh() {
+  refreshInterval = $('#refresh').val() 
+  if (running) { clearInterval(sequence)  
+  start()
+  }
 }
 
-function isOutOfBounds (index, array) {
-    return (index < 0 || index > array.length-1)
-}
-
-function indicesAreOutOfBounds (rowIndex, columnIndex, array) {
-    return (isOutOfBounds(rowIndex, array) || isOutOfBounds(columnIndex, array))
-}
-
-function isOverPopulated (neighbourCount) {
-    return neighbourCount > 3
-}
-
-function isRessurectable (neighbourCount) {
-    return neighbourCount == 3
-}
-
-function isUnderPopulated (neighbourCount) {
-    return neighbourCount < 2
-}
-
-function getNeighbours (cellRow, cellColumn, board) {
-    let neighbours = []
-    for (let i=-1; i <= 1; i++){
-        for (let j=-1; j <= 1; j++){
-            if (!(i === 0 && j === 0)) { //dont check own position
-            let neighbourRow = cellRow + i
-            let neighbourCol = cellColumn + j
-            if (!indicesAreOutOfBounds(neighbourRow, neighbourCol, board)) {
-                neighbours.push(board[neighbourRow][neighbourCol])
-            }
-            }
-        }
-    }
-    return neighbours
+function clearBoard() {
+  if (running) clearInterval(sequence)
+  running = false;
+  board = conways.createBoard(size)
+  populateBoard()
+  $('.cell').removeClass('alive')
+  $('#startButton').off()
+  $('#startButton').text('Start')
+  $('#startButton').on('click', start)  
 }
