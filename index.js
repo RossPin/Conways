@@ -1,29 +1,29 @@
 document.addEventListener('DOMContentLoaded', start)
 
-// const createBoard = require('./createBoard')
-// const nextBoard = require('./nextBoard')
-// const displayBoard = require('./displayBoard')
-
 const size = 100
-const refreshInterval = 200
+const refreshInterval = 100
 
 let board = createBoard(size)
-
-for (var i=0; i<size; i++){
-  for (var j=0; j<size; j++){
+let cellsize = 800/size+'px'
+for (let i=0; i<size; i++){
+  for (let j=0; j<size; j++){
     board[i][j] = Math.round(Math.random())
   }
 }
-//
-
 
 function start() {
-  var boardHTML = document.getElementById('board')
-  for (var i=0; i < size; i++){
+  let boardHTML = document.getElementById('board')
+  let boardSize = boardHTML.offsetWidth
+  let cellsize = Number(boardSize)/size+'px'
+  for (let i=0; i < size; i++){
     boardHTML.innerHTML += '<div id="row'+i+'" class="row"></div>'
-    var rowHTML = document.getElementById('row'+i)
-    for (var j=0; j < size; j++){
+    let rowHTML = document.getElementById('row'+i)
+    rowHTML.style.height = cellsize
+    for (let j=0; j < size; j++){
       rowHTML.innerHTML += '<span id="row'+i+'col'+j+'" class="cell"></span>'
+      let cell = document.getElementById('row'+i+'col'+j)
+      cell.style.height = cellsize
+      cell.style.width = cellsize
     }
   }
   setInterval(() => {
@@ -33,9 +33,9 @@ function start() {
 }
 
 function displayBoard () {
-  for (var i=0; i<size; i++){
-      for (var j=0; j<size; j++){
-        var cell = document.getElementById('row'+i+'col'+j)
+  for (let i=0; i<size; i++){
+      for (let j=0; j<size; j++){
+        let cell = document.getElementById('row'+i+'col'+j)
         if (board[i][j] == 1) {
           cell.classList.add('alive')
         }
@@ -47,10 +47,10 @@ function displayBoard () {
 }
 
 function createBoard (size) {
-    var board = []
-    for (var i=0; i < size; i++){
-        var row = []
-        for (var j=0; j < size; j++) {
+    let board = []
+    for (let i=0; i < size; i++){
+        let row = []
+        for (let j=0; j < size; j++) {
             row.push(0)
         }
         board.push(row)
@@ -59,12 +59,12 @@ function createBoard (size) {
 }
 
 function nextBoard (currentBoard) {
-    var newBoard = createBoard(currentBoard.length)
-    for (var i = 0; i < newBoard.length; i++) {
-        for (var j = 0; j < newBoard.length; j++) {
-            var row = i
-            var column = j
-            var aliveNeighbors = countAliveNeighbours(row, column, currentBoard)
+    let newBoard = createBoard(currentBoard.length)
+    for (let i = 0; i < newBoard.length; i++) {
+        for (let j = 0; j < newBoard.length; j++) {
+            let row = i
+            let column = j
+            let aliveNeighbors = countAliveNeighbours(row, column, currentBoard)
             newBoard[row][column] = nextCellState(currentBoard[row][column], aliveNeighbors)
         }
     }
@@ -78,7 +78,7 @@ function nextCellState (cellState, neighbourCount) {
 }
 
 function countAliveNeighbours (cellRow, cellColumn, board) {
-    var neighbours = getNeighbours(cellRow, cellColumn, board)
+    let neighbours = getNeighbours(cellRow, cellColumn, board)
     return neighbours.reduce((count, val) => count + val, 0)
 }
 
@@ -103,12 +103,12 @@ function isUnderPopulated (neighbourCount) {
 }
 
 function getNeighbours (cellRow, cellColumn, board) {
-    var neighbours = []
-    for (var i=-1; i <= 1; i++){
-        for (var j=-1; j <= 1; j++){
+    let neighbours = []
+    for (let i=-1; i <= 1; i++){
+        for (let j=-1; j <= 1; j++){
             if (!(i === 0 && j === 0)) { //dont check own position
-            var neighbourRow = cellRow + i
-            var neighbourCol = cellColumn + j
+            let neighbourRow = cellRow + i
+            let neighbourCol = cellColumn + j
             if (!indicesAreOutOfBounds(neighbourRow, neighbourCol, board)) {
                 neighbours.push(board[neighbourRow][neighbourCol])
             }

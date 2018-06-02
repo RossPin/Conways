@@ -1,19 +1,12 @@
 .board {
   margin-left: auto;
   margin-right: auto;
-  width: 800px;
-  border: 1px solid black;
-}
-
-.row {
- height: 8px;
-
+  width: 800px;  
 }
 
 .cell {
-  width: 1%;
-  height: 8px;
   display: inline-block;
+  background-color: rgb(240,240,255);
 }
 
 .alive {
