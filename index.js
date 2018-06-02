@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', start)
 
-const size = 100
+const size = 200
 const refreshInterval = 100
 
 let board = createBoard(size)
-let cellsize = 800/size+'px'
 for (let i=0; i<size; i++){
   for (let j=0; j<size; j++){
     board[i][j] = Math.round(Math.random())
@@ -15,17 +14,25 @@ function start() {
   let boardHTML = document.getElementById('board')
   let boardSize = boardHTML.offsetWidth
   let cellsize = Number(boardSize)/size+'px'
-  for (let i=0; i < size; i++){
-    boardHTML.innerHTML += '<div id="row'+i+'" class="row"></div>'
-    let rowHTML = document.getElementById('row'+i)
-    rowHTML.style.height = cellsize
+  // for (let i=0; i < size; i++){
+  //   boardHTML.innerHTML += '<div id="row'+i+'" style="height: '+cellsize+';"></div>'
+  //   let rowHTML = document.getElementById('row'+i)
+  //   //rowHTML.style.height = cellsize
+  //   for (let j=0; j < size; j++){
+  //     rowHTML.innerHTML += '<span id="row'+i+'col'+j+'" class="cell" style="height: '+cellsize+'; width: '+cellsize+'"></span>'
+  //     // let cell = document.getElementById('row'+i+'col'+j)
+  //     // cell.style.height = cellsize
+  //     // cell.style.width = cellsize
+  //   }
+  // }
+  for (let i=0; i < size; i++){    
+    let row = '<div id="row'+i+'" style="height: '+cellsize+';">'   
     for (let j=0; j < size; j++){
-      rowHTML.innerHTML += '<span id="row'+i+'col'+j+'" class="cell"></span>'
-      let cell = document.getElementById('row'+i+'col'+j)
-      cell.style.height = cellsize
-      cell.style.width = cellsize
+      row += '<span id="row'+i+'col'+j+'" class="cell" style="height: '+cellsize+'; width: '+cellsize+'"></span>'      
     }
+    boardHTML.innerHTML += row+'</div>'
   }
+
   setInterval(() => {
     displayBoard(board)
     board = nextBoard(board)
