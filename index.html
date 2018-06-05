@@ -34,6 +34,13 @@
           <option value="150">150x150</option> 
           <option value="200">200x200</option>          
         </select>
+        <label for="gridSize">Cell Density</label>
+        <select id="pattern" onchange="populateBoard()">
+          <option value="10">Random 10%</option>
+          <option value="20">Random 20%</option>
+          <option value="40" selected="selected">Random 40%</option>
+          <option value="100">Chess Board</option>                    
+        </select>
         <div class="btn" id="startButton">Start</div>
       </form>
       <div class="board" id="board">

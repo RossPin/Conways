@@ -9,7 +9,7 @@ let board = []
 
 function init() {
   board = conways.createBoard(size)
-  populateBoard()
+  populateBoard(10)  
   buildBoardHTML() 
   $('#startButton').off()
   $('#startButton').on('click', start) 
@@ -56,12 +56,31 @@ function buildBoardHTML() {
   $('.row').css('height', cellsize)
   $('.cell').css('height', cellsize)
   $('.cell').css('width', cellsize)
+  displayBoard(board)
 }
 
 function populateBoard() {
+  var pattern = $('#pattern').val()
+  if (pattern == 10) randomBoard(10)
+  else if (pattern == 20) randomBoard(20)
+  else if (pattern == 40) randomBoard(40)
+  else if (pattern == 100) chessBoard()
+  displayBoard(board)
+}
+
+function randomBoard(percent) {
+  var factor = percent/100+.5
   for (let i=0; i<size; i++){
     for (let j=0; j<size; j++){
-      board[i][j] = Math.round(Math.random())
+      board[i][j] = Math.round(Math.random()*factor)
+    }
+  }
+}
+
+function chessBoard(){
+  for (let i=0; i<size; i++){
+    for (let j=0; j<size; j++){
+      board[i][j] = ((i+j)%2 === 0)
     }
   }
 }
